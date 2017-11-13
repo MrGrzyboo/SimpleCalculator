@@ -23,7 +23,7 @@ public class MainFrame extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
 
-        equationsField = new JTextField();
+        equationsField = new EquationsTextField();
         equationsField.setPreferredSize(new Dimension(180, 25));
         gbc.gridx = 0;
         gbc.gridy = 0;
