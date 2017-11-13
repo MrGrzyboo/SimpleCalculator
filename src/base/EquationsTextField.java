@@ -5,7 +5,6 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
-import java.awt.event.KeyEvent;
 
 public class EquationsTextField extends JTextField {
 
@@ -14,7 +13,7 @@ public class EquationsTextField extends JTextField {
     }
 
     private static char acceptedKeys[] = {
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '*', '/', '^', '%'
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '*', '/', '^', '%', '(', ')', '.', ' '
     };
 
     private static PlainDocument getFormattingDocument() {
@@ -36,6 +35,11 @@ public class EquationsTextField extends JTextField {
 
                     boolean found = false;
                     for(int acceptedKey : acceptedKeys) {
+                        if(builder.charAt(i) == ',') {
+                            builder.setCharAt(i, '.');
+                            found = true;
+                            break;
+                        }
                         if(builder.charAt(i) == acceptedKey) {
                             found = true;
                             break;
