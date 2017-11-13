@@ -40,10 +40,17 @@ public class MainFrame extends JFrame {
         mainPanel.add(emptyPanel, gbc);
 
         calculateButton = new JButton("Calculate");
+        calculateButton.addActionListener(e -> onButtonClicked());
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         gbc.weightx = 0;
         mainPanel.add(calculateButton, gbc);
+    }
+
+    private void onButtonClicked() {
+        Equation equation = new Equation(equationsField.getText());
+        String result = equation.calculate();
+        equationsField.setText(result);
     }
 }

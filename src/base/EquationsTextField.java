@@ -13,9 +13,8 @@ public class EquationsTextField extends JTextField {
         super(getFormattingDocument(), null, 0);
     }
 
-    private static int acceptedKeys[] = {
-            KeyEvent.VK_0,KeyEvent.VK_1,KeyEvent.VK_2,KeyEvent.VK_3,KeyEvent.VK_4,KeyEvent.VK_5,KeyEvent.VK_6,KeyEvent.VK_7,KeyEvent.VK_8,KeyEvent.VK_9,
-            KeyEvent.VK_PLUS,KeyEvent.VK_MINUS,KeyEvent.VK_ASTERISK,KeyEvent.VK_SLASH
+    private static char acceptedKeys[] = {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '*', '/', '^', '%'
     };
 
     private static PlainDocument getFormattingDocument() {
