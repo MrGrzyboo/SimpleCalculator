@@ -50,7 +50,11 @@ public class MainFrame extends JFrame {
 
     private void onButtonClicked() {
         Equation equation = new Equation(equationsField.getText());
-        String result = equation.calculate();
-        equationsField.setText(result);
+        try {
+            String result = equation.calculate();
+            equationsField.setText(result);
+        } catch(InvalidExpressionException e) {
+            System.out.println("Error: " + e);
+        }
     }
 }

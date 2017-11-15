@@ -34,12 +34,12 @@ public class EquationsTextField extends JTextField {
                 for (int i = 0; i < builder.length();) {
 
                     boolean found = false;
-                    for(int acceptedKey : acceptedKeys) {
-                        if(builder.charAt(i) == ',') {
-                            builder.setCharAt(i, '.');
-                            found = true;
-                            break;
-                        }
+
+                    char c = builder.charAt(i);
+
+                    if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+                        found = true;
+                    else for(int acceptedKey : acceptedKeys) {
                         if(builder.charAt(i) == acceptedKey) {
                             found = true;
                             break;
