@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 class EquationTest {
 
     @Test
-    public void testEquationCalculation() {
+    public void testEquationCalculation() throws Exception {
         testCase("2+2*2", "6");
         testCase("(2+2)*2", "8");
         testCase("12+5/2*5-12", "12.5");
@@ -14,7 +14,7 @@ class EquationTest {
         testCase("12+2*4^3*0.5-3", "73");
     }
 
-    private void testCase(String equation, String expectedResult) {
+    private void testCase(String equation, String expectedResult) throws Exception {
         String result = new Equation(equation).calculate();
         Assertions.assertEquals(expectedResult, result);
     }

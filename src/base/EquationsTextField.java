@@ -9,7 +9,7 @@ import javax.swing.text.PlainDocument;
 public class EquationsTextField extends JTextField {
 
     EquationsTextField() {
-        super(getFormattingDocument(), null, 0);
+        super(getFormattingDocument(), /*null*/ "3+4*2/(1-5)^2", 0);
     }
 
     private static char acceptedKeys[] = {
