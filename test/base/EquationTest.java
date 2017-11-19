@@ -12,6 +12,7 @@ class EquationTest {
         testCase("12+5/2*5-12", "12.5");
         testCase("0-12-5/(2*5-12)", "-9.5");
         testCase("12+2*4^3*0.5-3", "73.0");
+        testCase("1+(1 + (0.25/2.5) * 12+2.8)/2 - 4", "-0.5");
     }
 
     private void testCase(String equation, String expectedResult) throws Exception {

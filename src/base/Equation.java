@@ -10,7 +10,7 @@ public class Equation {
     private String value;
 
     public Equation(String value) {
-        this.value = value;
+        this.value = value.replaceAll("\\s+", "");
     }
 
     public String calculate() throws InvalidOperatorException {
