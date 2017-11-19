@@ -1,6 +1,5 @@
 package base;
 
-import javafx.util.Pair;
 
 import java.util.EmptyStackException;
 import java.util.LinkedList;
@@ -15,55 +14,78 @@ public class Equation {
     }
 
     public String calculate() throws InvalidOperatorException {
+        Stack<Double> stack = new Stack<>();
+        LinkedList<String> queue = getReversedPolishNotationQueue();
+
+        Map<String, Operator> map = Operator.getMappedRepresentations();
+
+        try {
+            for (String symbol : queue) {
+                if (isNumber(symbol)) {
+                    double val = Double.valueOf(symbol);
+                    stack.push(val);
+                }
+                else if(isOperator(symbol)) {
+                    Operator op = map.get(symbol);
+                    double v1 = stack.pop();
+                    double v2 = stack.pop();
+                    double val = op.evaluate(v2, v1);
+                    stack.push(val);
+                }
+                else if(isFunction(symbol)) {
+                    Operator op = map.get(symbol);
+                    int paramCount = op.getArgumentsCount();
+                    double params[] = new double[paramCount];
+                    for(int i = 0; i < paramCount; ++i)
+                        params[i] = stack.pop();
+
+                    double val = op.evaluate(params);
+                    stack.push(val);
+                }
+            }
+        } catch(NumberFormatException e) {
+            throw new InvalidOperatorException("Error: Cannot convert to number: " + e);
+        }
+
+        return String.valueOf(stack.pop());
+    }
+
+    private LinkedList<String> getReversedPolishNotationQueue() throws InvalidOperatorException {
         Stack<String> stack = new Stack<>();
         LinkedList<String> queue = new LinkedList<>();
 
         Map<String, Operator> map = Operator.getMappedRepresentations();
 
         for(String symbol : getExpressionList()) {
-            System.out.println("symbol: " + symbol);
-            if(isNumber(symbol)) {
+            if(isNumber(symbol))
                 queue.add(symbol);
-                d("Dodaj " + symbol, queue, stack);
-            }
-            else if(isFunction(symbol)) {
+            else if(isFunction(symbol))
                 stack.push(symbol);
-                d("Push " + symbol, queue, stack);
-            }
             else if(isOperator(symbol, Operator.COMMA)) {
                 while(!stack.empty() && !Operator.PARENTHESIS_LEFT.isEqual(stack.peek())) {
                     String top = stack.pop();
                     queue.add(top);
-                    d("Dodaj " + symbol, queue, stack);
                 }
 
                 if(stack.isEmpty() || isOperator(stack.peek(), Operator.PARENTHESIS_LEFT))
                     throw new InvalidOperatorException("Error: Invalid commas or parenthesis");
 
             }
-            else if(isOperator(symbol, Operator.PARENTHESIS_LEFT)) {
+            else if(isOperator(symbol, Operator.PARENTHESIS_LEFT))
                 stack.push(symbol);
-                d("Push " + symbol, queue, stack);
-            }
             else if(isOperator(symbol, Operator.PARENTHESIS_RIGHT)) {
                 while(!stack.empty() && !Operator.PARENTHESIS_LEFT.isEqual(stack.peek())) {
                     String top = stack.pop();
-                    d("Zdejmij " + symbol, queue, stack);
                     queue.add(top);
-                    d("Dodaj " + symbol, queue, stack);
                 }
 
                 try {
-                    if (Operator.PARENTHESIS_LEFT.isEqual(stack.peek())) {
+                    if (Operator.PARENTHESIS_LEFT.isEqual(stack.peek()))
                         stack.pop();
-                        d("Zdejmij " + symbol, queue, stack);
-                    }
                     else throw new InvalidOperatorException("Parenthesis don't match 1");
 
-                    if(isFunction(stack.peek())) {
+                    if(!stack.isEmpty() && isFunction(stack.peek()))
                         queue.add(stack.pop());
-                        d("Zdejmij " + symbol, queue, stack);
-                    }
 
 
                 } catch(EmptyStackException e) {
@@ -82,17 +104,13 @@ public class Equation {
                 }
 
                 stack.push(symbol);
-                d("Push " + symbol, queue, stack);
             }
         }
 
         while(!stack.empty())
             queue.add(stack.pop());
 
-        for(String str : queue)
-            System.out.print(str + " ");
-
-        return "0";
+        return queue;
     }
 
     private enum ExpressionType {
@@ -125,13 +143,13 @@ public class Equation {
                 else // Single char operator, parenthesis, comma etc
                     list.add(String.valueOf(c));
 
-                if(++i == value.length())
+                if(++i == value.length() && expression.length() > 0)
                     list.add(expression.toString());
             }
 
             else if(type == ExpressionType.NUMERIC) {
                 char c;
-                while(isNumeric(c = value.charAt(i))) {
+                while(i < value.length() && isNumeric(c = value.charAt(i))) {
                     expression.append(c);
                     ++i;
                 }
@@ -141,11 +159,10 @@ public class Equation {
 
             else {
                 char c;
-                while(isLetter(c = value.charAt(i))) {
+                while(i < value.length() && isLetter(c = value.charAt(i))) {
                     expression.append(c);
                     ++i;
                 }
-
                 list.add(expression.toString());
                 type = ExpressionType.NONE;
             }
@@ -177,15 +194,5 @@ public class Equation {
 
     private boolean isOperator(String s, Operator op) {
         return s.equals(op.toString());
-    }
-
-    private void d(String co, LinkedList<String> queue, Stack<String> stack) {
-        /*System.out.println(co);
-        for(String str : queue)
-            System.out.print(str + " ");
-        System.out.println();
-        for(String str : stack)
-            System.out.print(str + " ");
-        System.out.println();*/
     }
 }
