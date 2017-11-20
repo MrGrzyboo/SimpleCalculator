@@ -1,6 +1,5 @@
 package base;
 
-
 import java.util.EmptyStackException;
 import java.util.LinkedList;
 import java.util.Map;
@@ -47,7 +46,30 @@ public class Equation {
             throw new InvalidOperatorException("Error: Cannot convert to number: " + e);
         }
 
-        return String.valueOf(stack.pop());
+        if(stack.empty())
+            return "0";
+
+        return cutUnnecessaryZeroes(String.valueOf(stack.pop()));
+    }
+
+    private String cutUnnecessaryZeroes(String str) {
+        int cut = 0;
+
+        for(int i = str.length() - 1; i >= 0; --i) {
+            char c = str.charAt(i);
+            if(c == '0')
+                ++cut;
+            else if(c == '.') {
+                ++cut;
+                break;
+            }
+            else break;
+        }
+
+        if(cut > 0)
+            str = str.substring(0, str.length() - cut);
+
+        return str;
     }
 
     private LinkedList<String> getReversedPolishNotationQueue() throws InvalidOperatorException {

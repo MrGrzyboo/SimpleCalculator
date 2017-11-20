@@ -9,11 +9,11 @@ import javax.swing.text.PlainDocument;
 public class EquationsTextField extends JTextField {
 
     EquationsTextField() {
-        super(getFormattingDocument(), /*null*/ "3+4*2/(1-5)^2", 0);
+        super(getFormattingDocument(), null, 0);
     }
 
     private static char acceptedKeys[] = {
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '*', '/', '^', '%', '(', ')', '.', ' '
+            '+', '-', '*', '/', '^', '%', '(', ')', '.', ' '
     };
 
     private static PlainDocument getFormattingDocument() {
@@ -34,15 +34,15 @@ public class EquationsTextField extends JTextField {
                 for (int i = 0; i < builder.length();) {
 
                     boolean found = false;
-                    for(int acceptedKey : acceptedKeys) {
-                        if(builder.charAt(i) == ',') {
-                            builder.setCharAt(i, '.');
-                            found = true;
-                            break;
-                        }
-                        if(builder.charAt(i) == acceptedKey) {
-                            found = true;
-                            break;
+                    char c = builder.charAt(i);
+                    if((c >= 'a' && c <= 'z')||(c >= 'A' && c <= 'Z')||(c >= '0' && c <= '9'))
+                        found = true;
+                    else {
+                        for (int acceptedKey : acceptedKeys) {
+                            if (c == acceptedKey) {
+                                found = true;
+                                break;
+                            }
                         }
                     }
 
