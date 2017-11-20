@@ -36,7 +36,7 @@ public class Equation {
                     Operator op = map.get(symbol);
                     int paramCount = op.getArgumentsCount();
                     double params[] = new double[paramCount];
-                    for(int i = 0; i < paramCount; ++i)
+                    for(int i = paramCount - 1; i >= 0; --i)
                         params[i] = stack.pop();
 
                     double val = op.evaluate(params);
@@ -67,7 +67,7 @@ public class Equation {
                     queue.add(top);
                 }
 
-                if(stack.isEmpty() || isOperator(stack.peek(), Operator.PARENTHESIS_LEFT))
+                if(stack.isEmpty() || !isOperator(stack.peek(), Operator.PARENTHESIS_LEFT))
                     throw new InvalidOperatorException("Error: Invalid commas or parenthesis");
 
             }
