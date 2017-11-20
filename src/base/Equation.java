@@ -56,11 +56,18 @@ public class Equation {
 
         Map<String, Operator> map = Operator.getMappedRepresentations();
 
+        // Needed for -12 to be read as 0-12
+        boolean validSymbolForSingleParamOperator = true;
+
         for(String symbol : getExpressionList()) {
-            if(isNumber(symbol))
+            if(isNumber(symbol)) {
                 queue.add(symbol);
-            else if(isFunction(symbol))
+                validSymbolForSingleParamOperator = false;
+            }
+            else if(isFunction(symbol)) {
                 stack.push(symbol);
+                validSymbolForSingleParamOperator = false;
+            }
             else if(isOperator(symbol, Operator.COMMA)) {
                 while(!stack.empty() && !Operator.PARENTHESIS_LEFT.isEqual(stack.peek())) {
                     String top = stack.pop();
@@ -70,9 +77,12 @@ public class Equation {
                 if(stack.isEmpty() || isOperator(stack.peek(), Operator.PARENTHESIS_LEFT))
                     throw new InvalidOperatorException("Error: Invalid commas or parenthesis");
 
+                validSymbolForSingleParamOperator = true;
             }
-            else if(isOperator(symbol, Operator.PARENTHESIS_LEFT))
+            else if(isOperator(symbol, Operator.PARENTHESIS_LEFT)) {
                 stack.push(symbol);
+                validSymbolForSingleParamOperator = true;
+            }
             else if(isOperator(symbol, Operator.PARENTHESIS_RIGHT)) {
                 while(!stack.empty() && !Operator.PARENTHESIS_LEFT.isEqual(stack.peek())) {
                     String top = stack.pop();
@@ -92,18 +102,26 @@ public class Equation {
                     throw new InvalidOperatorException("Parenthesis don't match 2");
                 }
 
+                validSymbolForSingleParamOperator = true;
             }
             else if(isOperator(symbol)) {
                 Operator o1 = map.get(symbol);
                 while (!stack.empty()) {
-                    Operator o2 = map.get(stack.peek());
-                    if((o1.isLeftJoined() && o1.getPriority() <= o2.getPriority()) || (o1.isRightJoined() && o1.getPriority() < o2.getPriority()) )
+                    if((o1 == Operator.PLUS || o1 == Operator.MINUS) && validSymbolForSingleParamOperator) {
                         queue.add(stack.pop());
-                    else
                         break;
+                    }
+                    else {
+                        Operator o2 = map.get(stack.peek());
+                        if ((o1.isLeftJoined() && o1.getPriority() <= o2.getPriority()) || (o1.isRightJoined() && o1.getPriority() < o2.getPriority()))
+                            queue.add(stack.pop());
+                        else
+                            break;
+                    }
                 }
 
                 stack.push(symbol);
+                validSymbolForSingleParamOperator = false;
             }
         }
 
