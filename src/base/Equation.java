@@ -140,8 +140,20 @@ public class Equation {
                     type = ExpressionType.FUNCTION;
                     expression.append(c);
                 }
-                else // Single char operator, parenthesis, comma etc
-                    list.add(String.valueOf(c));
+                else { // Single char operator, parenthesis, comma etc
+                    String str = String.valueOf(c);
+                    if(str.equals(Operator.PLUS.toString()) || str.equals(Operator.MINUS.toString())) {
+                        if(i == 0)
+                            list.add("0");
+                        else {
+                            String previous = String.valueOf(value.charAt(i - 1));
+                            if(previous.equals(Operator.COMMA.toString()) || previous.equals(Operator.PARENTHESIS_LEFT.toString()))
+                                list.add("0");
+                        }
+                    }
+
+                    list.add(str);
+                }
 
                 if(++i == value.length() && expression.length() > 0)
                     list.add(expression.toString());
